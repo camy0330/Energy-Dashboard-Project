@@ -6,77 +6,110 @@ import numpy as np
 
 # ================= PAGE CONFIG =================
 st.set_page_config(
-    page_title="Big Data Energy Insights",
-    page_icon="⚡",
-    layout="wide"
+    page_title="Sustainable Energy Dashboard",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 # ================= CUSTOM CSS =================
 st.markdown("""
 <style>
+
+/* Global */
 .main {
-    background-color: #f8fafc;
+    background-color: #f5f7fb;
 }
 
 .block-container {
-    padding-top: 1.5rem;
+    padding-top: 1.2rem;
+    padding-bottom: 2rem;
 }
 
+/* Header */
 .dashboard-title {
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 800;
     color: #0f172a;
+    margin-bottom: 0;
 }
 
 .dashboard-subtitle {
     font-size: 16px;
     color: #64748b;
-    margin-bottom: 20px;
+    margin-top: 0;
+    margin-bottom: 25px;
 }
 
+/* Metric Cards */
 .metric-card {
     background: white;
     padding: 22px;
     border-radius: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    border-left: 6px solid #2563eb;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    border: 1px solid #e2e8f0;
 }
 
 .metric-label {
     color: #64748b;
     font-size: 14px;
     font-weight: 600;
+    margin-bottom: 10px;
 }
 
 .metric-value {
     color: #0f172a;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 800;
 }
 
+/* Section Card */
 .section-card {
     background: white;
-    padding: 25px;
+    padding: 24px;
     border-radius: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
     margin-bottom: 20px;
 }
 
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background-color: #ffffff;
+    border-right: 1px solid #e2e8f0;
+}
+
+/* Tabs */
 .stTabs [data-baseweb="tab-list"] {
     gap: 10px;
+    margin-bottom: 10px;
 }
 
 .stTabs [data-baseweb="tab"] {
     background-color: #e2e8f0;
-    border-radius: 12px;
-    padding: 12px 18px;
+    border-radius: 10px;
+    padding: 12px 20px;
     font-weight: 600;
+    color: #334155;
 }
 
 .stTabs [aria-selected="true"] {
     background-color: #2563eb !important;
     color: white !important;
 }
+
+/* Dataframe */
+[data-testid="stDataFrame"] {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Buttons */
+.stButton button {
+    border-radius: 10px;
+    font-weight: 600;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
@@ -111,21 +144,25 @@ df = df.dropna(subset=['Entity', 'Year'])
 
 # ================= HEADER =================
 st.markdown(
-    '<div class="dashboard-title">⚡ Sustainable Energy: Analysis & Prediction Dashboard</div>',
+    '<div class="dashboard-title">Sustainable Energy Dashboard</div>',
     unsafe_allow_html=True
 )
 
 st.markdown(
-    '<div class="dashboard-subtitle">Professional dashboard for energy access, clean fuel usage, GDP, and renewable energy analysis.</div>',
+    '<div class="dashboard-subtitle">Analysis and prediction of electricity access, renewable energy usage, and economic indicators.</div>',
     unsafe_allow_html=True
 )
 
 # ================= SIDEBAR =================
-st.sidebar.title("⚙️ Dashboard Filters")
+st.sidebar.title("Dashboard Filters")
 
 country_options = sorted(df['Entity'].dropna().unique())
 
-default_country = ["Malaysia"] if "Malaysia" in country_options else [country_options[0]]
+default_country = (
+    ["Malaysia"]
+    if "Malaysia" in country_options
+    else [country_options[0]]
+)
 
 countries = st.sidebar.multiselect(
     "Select Countries",
@@ -134,7 +171,7 @@ countries = st.sidebar.multiselect(
 )
 
 year_range = st.sidebar.slider(
-    "Year Range",
+    "Select Year Range",
     int(df['Year'].min()),
     int(df['Year'].max()),
     (2000, 2020)
@@ -149,7 +186,7 @@ mask = (
 filtered_df = df[mask].copy()
 
 if filtered_df.empty:
-    st.warning("No data available for the selected country and year range.")
+    st.warning("No data available for the selected filters.")
     st.stop()
 
 # ================= KPI VALUES =================
@@ -158,38 +195,54 @@ avg_clean_fuel = filtered_df[clean_fuel_col].mean()
 avg_renewable = filtered_df[renewable_col].mean()
 avg_gdp = filtered_df[gdp_col].mean()
 
-# ================= KPI CARDS =================
+# ================= KPI SECTION =================
 kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
 with kpi1:
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-label">Average Electricity Access</div>
-        <div class="metric-value">{avg_electricity:.2f}%</div>
+        <div class="metric-label">
+            Average Electricity Access
+        </div>
+        <div class="metric-value">
+            {avg_electricity:.2f}%
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with kpi2:
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-label">Average Clean Fuel Access</div>
-        <div class="metric-value">{avg_clean_fuel:.2f}%</div>
+        <div class="metric-label">
+            Average Clean Fuel Access
+        </div>
+        <div class="metric-value">
+            {avg_clean_fuel:.2f}%
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with kpi3:
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-label">Average Renewable Share</div>
-        <div class="metric-value">{avg_renewable:.2f}%</div>
+        <div class="metric-label">
+            Average Renewable Share
+        </div>
+        <div class="metric-value">
+            {avg_renewable:.2f}%
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 with kpi4:
     st.markdown(f"""
     <div class="metric-card">
-        <div class="metric-label">Average GDP Per Capita</div>
-        <div class="metric-value">${avg_gdp:,.0f}</div>
+        <div class="metric-label">
+            Average GDP Per Capita
+        </div>
+        <div class="metric-value">
+            ${avg_gdp:,.0f}
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -197,22 +250,60 @@ st.markdown("<br>", unsafe_allow_html=True)
 
 # ================= TABS =================
 tab1, tab2, tab3 = st.tabs([
-    "📊 Descriptive Analysis",
-    "🔍 Diagnostic Heatmaps",
-    "🤖 Predictive Model"
+    "Descriptive Analysis",
+    "Diagnostic Analysis",
+    "Predictive Model"
 ])
 
 # ================= TAB 1 =================
 with tab1:
-    st.subheader("📊 Access to Electricity Overview")
+
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+
+    st.subheader("Electricity Access Trend")
+
+    trend_data = (
+        filtered_df
+        .groupby('Year')[electricity_col]
+        .mean()
+        .reset_index()
+    )
+
+    fig_trend = px.line(
+        trend_data,
+        x='Year',
+        y=electricity_col,
+        markers=True,
+        template="plotly_white"
+    )
+
+    fig_trend.update_layout(
+        height=450,
+        title="Average Access to Electricity Over Time",
+        title_x=0.5,
+        xaxis_title="Year",
+        yaxis_title="Access to Electricity (%)",
+        hovermode="x unified"
+    )
+
+    st.plotly_chart(fig_trend, use_container_width=True)
+
+    st.markdown('</div>', unsafe_allow_html=True)
 
     col1, col2 = st.columns([1, 2])
 
     with col1:
+
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
+
         st.subheader("Summary Statistics")
 
-        summary_stats = filtered_df[electricity_col].describe().to_frame()
+        summary_stats = (
+            filtered_df[electricity_col]
+            .describe()
+            .to_frame()
+        )
+
         summary_stats.columns = ["Value"]
 
         st.dataframe(summary_stats, use_container_width=True)
@@ -220,44 +311,41 @@ with tab1:
         st.markdown('</div>', unsafe_allow_html=True)
 
     with col2:
+
         st.markdown('<div class="section-card">', unsafe_allow_html=True)
-        st.subheader("Yearly Electricity Access Trend")
 
-        trend_data = (
-            filtered_df
-            .groupby('Year')[electricity_col]
-            .mean()
-            .reset_index()
-        )
+        st.subheader("Electricity Access Distribution")
 
-        fig_trend = px.line(
-            trend_data,
-            x='Year',
+        box_df = filtered_df.dropna(subset=[electricity_col])
+
+        fig_box = px.box(
+            box_df,
+            x='Entity',
             y=electricity_col,
-            markers=True,
+            color='Entity',
             template="plotly_white"
         )
 
-        fig_trend.update_layout(
+        fig_box.update_layout(
             height=450,
-            title="Average Access to Electricity Over Time",
-            xaxis_title="Year",
-            yaxis_title="Access to Electricity (%)",
-            hovermode="x unified",
-            margin=dict(l=30, r=30, t=60, b=30)
+            showlegend=False,
+            xaxis_title="Country",
+            yaxis_title="Electricity Access (%)"
         )
 
-        st.plotly_chart(fig_trend, use_container_width=True)
+        st.plotly_chart(fig_box, use_container_width=True)
+
         st.markdown('</div>', unsafe_allow_html=True)
 
 # ================= TAB 2 =================
 with tab2:
-    st.subheader("🔍 Variable Correlations & Distribution")
 
     st.markdown('<div class="section-card">', unsafe_allow_html=True)
-    st.subheader("Large Correlation Heatmap")
+
+    st.subheader("Correlation Heatmap")
 
     numeric_df = df.select_dtypes(include='number')
+
     corr = numeric_df.corr()
 
     fig_heat = px.imshow(
@@ -278,95 +366,69 @@ with tab2:
 
     fig_heat.update_xaxes(
         tickangle=45,
-        side="bottom",
-        tickfont=dict(size=12)
+        tickfont=dict(size=11)
     )
 
     fig_heat.update_yaxes(
-        tickfont=dict(size=12)
+        tickfont=dict(size=11)
     )
 
     st.plotly_chart(fig_heat, use_container_width=True)
+
     st.markdown('</div>', unsafe_allow_html=True)
 
-    col3, col4 = st.columns(2)
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
 
-    with col3:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
-        st.subheader("Electricity Access Distribution")
+    st.subheader("Clean Fuel Access vs Electricity Access")
 
-        box_df = filtered_df.dropna(subset=[electricity_col])
+    scatter_df = filtered_df[
+        ['Entity', 'Year', clean_fuel_col, electricity_col, gdp_col]
+    ].copy()
 
-        if box_df.empty:
-            st.warning("No valid electricity access data available.")
-        else:
-            fig_box = px.box(
-                box_df,
-                x='Entity',
-                y=electricity_col,
-                color='Entity',
-                template="plotly_white"
-            )
+    scatter_df = scatter_df.dropna(
+        subset=[clean_fuel_col, electricity_col, gdp_col]
+    )
 
-            fig_box.update_layout(
-                height=500,
-                showlegend=False,
-                xaxis_title="Country",
-                yaxis_title="Access to Electricity (%)",
-                margin=dict(l=30, r=30, t=40, b=80)
-            )
+    scatter_df[gdp_col] = pd.to_numeric(
+        scatter_df[gdp_col],
+        errors='coerce'
+    )
 
-            st.plotly_chart(fig_box, use_container_width=True)
+    scatter_df = scatter_df.dropna(subset=[gdp_col])
 
-        st.markdown('</div>', unsafe_allow_html=True)
+    scatter_df = scatter_df[scatter_df[gdp_col] > 0]
 
-    with col4:
-        st.markdown('<div class="section-card">', unsafe_allow_html=True)
-        st.subheader("Clean Fuel vs Electricity Access")
+    if scatter_df.empty:
+        st.warning("No valid data available for scatter plot.")
+    else:
 
-        scatter_df = filtered_df[
-            ['Entity', 'Year', clean_fuel_col, electricity_col, gdp_col]
-        ].copy()
-
-        scatter_df = scatter_df.dropna(
-            subset=[clean_fuel_col, electricity_col, gdp_col]
+        fig_scatter = px.scatter(
+            scatter_df,
+            x=clean_fuel_col,
+            y=electricity_col,
+            color='Entity',
+            size=gdp_col,
+            size_max=45,
+            hover_data=['Year', gdp_col],
+            template="plotly_white"
         )
 
-        scatter_df[gdp_col] = pd.to_numeric(scatter_df[gdp_col], errors='coerce')
-        scatter_df = scatter_df.dropna(subset=[gdp_col])
+        fig_scatter.update_layout(
+            height=550,
+            xaxis_title="Clean Fuel Access (%)",
+            yaxis_title="Electricity Access (%)"
+        )
 
-        # Important fix:
-        # Plotly bubble size must be positive.
-        scatter_df = scatter_df[scatter_df[gdp_col] > 0]
+        st.plotly_chart(fig_scatter, use_container_width=True)
 
-        if scatter_df.empty:
-            st.warning("No valid data available for scatter plot for the selected country/year range.")
-        else:
-            fig_scatter = px.scatter(
-                scatter_df,
-                x=clean_fuel_col,
-                y=electricity_col,
-                color='Entity',
-                size=gdp_col,
-                size_max=45,
-                hover_data=['Year', gdp_col],
-                template="plotly_white"
-            )
-
-            fig_scatter.update_layout(
-                height=500,
-                xaxis_title="Clean Fuel Access (%)",
-                yaxis_title="Electricity Access (%)",
-                margin=dict(l=30, r=30, t=40, b=60)
-            )
-
-            st.plotly_chart(fig_scatter, use_container_width=True)
-
-        st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # ================= TAB 3 =================
 with tab3:
-    st.subheader("🤖 Predicting Access to Electricity")
+
+    st.markdown('<div class="section-card">', unsafe_allow_html=True)
+
+    st.subheader("Electricity Access Prediction")
 
     X_cols = [
         'Year',
@@ -375,80 +437,89 @@ with tab3:
         renewable_col
     ]
 
-    model_df = df.dropna(subset=X_cols + [electricity_col]).copy()
+    model_df = df.dropna(
+        subset=X_cols + [electricity_col]
+    ).copy()
 
     model_df = model_df[model_df[gdp_col] > 0]
 
-    if model_df.empty:
-        st.warning("Not enough valid data to train the prediction model.")
-    else:
-        X = model_df[X_cols]
-        y = model_df[electricity_col]
+    X = model_df[X_cols]
+    y = model_df[electricity_col]
 
-        model = LinearRegression()
-        model.fit(X, y)
+    model = LinearRegression()
+    model.fit(X, y)
 
-        col5, col6 = st.columns([1, 1.5])
+    col5, col6 = st.columns([1, 1.4])
 
-        with col5:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.subheader("Input Prediction Values")
+    with col5:
 
-            p_year = st.number_input("Enter Year", value=2025)
+        st.markdown("### Input Parameters")
 
-            p_fuels = st.slider(
-                "Clean Fuel Access (%)",
-                min_value=0,
-                max_value=100,
-                value=50
-            )
+        p_year = st.number_input(
+            "Year",
+            value=2025
+        )
 
-            mean_gdp = df[gdp_col].dropna().mean()
+        p_fuels = st.slider(
+            "Clean Fuel Access (%)",
+            0,
+            100,
+            50
+        )
 
-            p_gdp = st.number_input(
-                "GDP Per Capita",
-                value=float(mean_gdp) if not np.isnan(mean_gdp) else 1000.0
-            )
+        p_gdp = st.number_input(
+            "GDP Per Capita",
+            value=float(df[gdp_col].mean())
+        )
 
-            p_renew = st.slider(
-                "Renewable Share (%)",
-                min_value=0,
-                max_value=100,
-                value=20
-            )
+        p_renew = st.slider(
+            "Renewable Energy Share (%)",
+            0,
+            100,
+            20
+        )
 
-            input_data = pd.DataFrame({
-                'Year': [p_year],
-                clean_fuel_col: [p_fuels],
-                gdp_col: [p_gdp],
-                renewable_col: [p_renew]
-            })
+        input_data = pd.DataFrame({
+            'Year': [p_year],
+            clean_fuel_col: [p_fuels],
+            gdp_col: [p_gdp],
+            renewable_col: [p_renew]
+        })
 
-            prediction = model.predict(input_data)[0]
-            prediction = max(0, min(100, prediction))
+        prediction = model.predict(input_data)[0]
 
-            st.success(f"Predicted Access to Electricity: {prediction:.2f}%")
+        prediction = max(0, min(100, prediction))
 
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.success(
+            f"Predicted Electricity Access: {prediction:.2f}%"
+        )
 
-        with col6:
-            st.markdown('<div class="section-card">', unsafe_allow_html=True)
-            st.subheader("Prediction Gauge")
+    with col6:
 
-            fig_gauge = px.pie(
-                values=[prediction, 100 - prediction],
-                names=["Predicted Access", "Remaining"],
-                hole=0.65,
-                template="plotly_white"
-            )
+        fig_prediction = px.bar(
+            x=["Predicted Access"],
+            y=[prediction],
+            text=[f"{prediction:.2f}%"],
+            template="plotly_white"
+        )
 
-            fig_gauge.update_layout(
-                height=450,
-                title=f"Predicted Electricity Access: {prediction:.2f}%",
-                title_x=0.5,
-                showlegend=True
-            )
+        fig_prediction.update_layout(
+            height=400,
+            yaxis_range=[0, 100],
+            showlegend=False,
+            title="Prediction Result",
+            title_x=0.5,
+            xaxis_title="",
+            yaxis_title="Access to Electricity (%)"
+        )
 
-            st.plotly_chart(fig_gauge, use_container_width=True)
+        fig_prediction.update_traces(
+            textposition='outside'
+        )
 
-            st.markdown('</div>', unsafe_allow_html=True)
+        st.plotly_chart(
+            fig_prediction,
+            use_container_width=True
+        )
+
+    st.markdown('</div>', unsafe_allow_html=True)
