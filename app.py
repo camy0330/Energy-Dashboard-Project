@@ -26,21 +26,25 @@ st.markdown("""
     padding-bottom: 2rem;
 }
 
-/* Header - FORCED OVERRIDE TO MAKE SMALLER */
+/* Header - FIXED FOR HEIGHT AND CUT OFF ISSUES */
 .dashboard-title {
-    font-size: 26px !important;    /* Forces it to be smaller */
+    font-size: 26px !important;
     font-weight: 700 !important;
     color: #0f172a !important;
-    margin-bottom: 4px !important;
-    line-height: 1.2 !important;
+    margin-bottom: 6px !important;
+    line-height: 1.4 !important; /* Fixed: Prevents vertical clipping */
+    display: block !important;
+    height: auto !important;
 }
 
 .dashboard-subtitle {
-    font-size: 14px !important;    /* Forces it to be smaller */
+    font-size: 14px !important;
     color: #64748b !important;
     margin-top: 0 !important;
     margin-bottom: 25px !important;
-    line-height: 1.4 !important;
+    line-height: 1.5 !important; /* Fixed: Prevents vertical clipping */
+    display: block !important;
+    height: auto !important;
 }
 
 /* Metric Cards */
