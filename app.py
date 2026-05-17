@@ -26,19 +26,21 @@ st.markdown("""
     padding-bottom: 2rem;
 }
 
-/* Header - UPDATED FOR SMALLER FONTS */
+/* Header - FORCED OVERRIDE TO MAKE SMALLER */
 .dashboard-title {
-    font-size: 28px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 4px;
+    font-size: 26px !important;    /* Forces it to be smaller */
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    margin-bottom: 4px !important;
+    line-height: 1.2 !important;
 }
 
 .dashboard-subtitle {
-    font-size: 14px;
-    color: #64748b;
-    margin-top: 0;
-    margin-bottom: 25px;
+    font-size: 14px !important;    /* Forces it to be smaller */
+    color: #64748b !important;
+    margin-top: 0 !important;
+    margin-bottom: 25px !important;
+    line-height: 1.4 !important;
 }
 
 /* Metric Cards */
