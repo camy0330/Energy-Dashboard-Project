@@ -26,16 +26,16 @@ st.markdown("""
     padding-bottom: 2rem;
 }
 
-/* Header */
+/* Header - UPDATED FOR SMALLER FONTS */
 .dashboard-title {
-    font-size: 40px;
-    font-weight: 800;
+    font-size: 28px;
+    font-weight: 700;
     color: #0f172a;
-    margin-bottom: 0;
+    margin-bottom: 4px;
 }
 
 .dashboard-subtitle {
-    font-size: 16px;
+    font-size: 14px;
     color: #64748b;
     margin-top: 0;
     margin-bottom: 25px;
