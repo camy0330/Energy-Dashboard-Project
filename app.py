@@ -21,18 +21,20 @@ st.markdown("""
     background-color: #f5f7fb;
 }
 
+/* INCREASED TOP PADDING TO PUSH CONTENT DOWN */
 .block-container {
-    padding-top: 1.2rem;
-    padding-bottom: 2rem;
+    padding-top: 3.5rem !important; 
+    padding-bottom: 2rem !important;
 }
 
-/* Header - FIXED FOR HEIGHT AND CUT OFF ISSUES */
+/* Header - FIXED FOR HEIGHT AND TOP MARGIN */
 .dashboard-title {
     font-size: 26px !important;
     font-weight: 700 !important;
     color: #0f172a !important;
+    margin-top: 15px !important;    /* Pushes the header down from the top edge */
     margin-bottom: 6px !important;
-    line-height: 1.4 !important; /* Fixed: Prevents vertical clipping */
+    line-height: 1.4 !important;    /* Ensures text layout height is accurate */
     display: block !important;
     height: auto !important;
 }
@@ -42,7 +44,7 @@ st.markdown("""
     color: #64748b !important;
     margin-top: 0 !important;
     margin-bottom: 25px !important;
-    line-height: 1.5 !important; /* Fixed: Prevents vertical clipping */
+    line-height: 1.5 !important;
     display: block !important;
     height: auto !important;
 }
